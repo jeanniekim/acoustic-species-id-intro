@@ -24,7 +24,7 @@ Should return True/False if the stratified csv file was successful.
 def sample(path):
 
   df = pd.read_csv(path)
-  df.dropna(subset=['Duration', 'StartDateTime'], inplace=True) # dropping NaN*
+  df.dropna(subset=['Duration', 'Comment'], inplace=True) # dropping NaN*
   # *dependent on what you consider valid data
 
   # put the CSV data into a dictionary grouped by the AudioMothCodes
@@ -58,8 +58,12 @@ def sample(path):
     for i, row in currAmDf.iterrows():  # index, row (series of tuples)
 
       # get hour and duration
-      dateTime = currAmDf['StartDateTime'][i]
-      time = str(dateTime).split()[1]
+      # new: from 'Comment' column*
+      # comment example: "Recorded at 11:00:00 19/06/2022..."
+      # *WWF Audiomoths don't have 'StartDateTime'
+
+      comm = currAmDf['Comment'][i]
+      time = str(comm).split()[2]
       hour = int(time.split(':')[0])
 
       duration = float(currAmDf['Duration'][i])
